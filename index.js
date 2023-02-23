@@ -14,12 +14,22 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    // perform actions on the collection object
-    client.close();
-});
 
+async function run(){
+    try {
+        const serviceCollection = client.db("carService").collection("services");
+        
+        // create a document to insert
+        const doc = {
+            
+        }
+        const result = await serviceCollection.insertOne(doc);
+        
+    } finally {
+        // await client.close();
+    }
+}
+run().catch(err=> console.log(err))
 
 app.get('/', (req, res)=>{
     res.send('car service server is running')
