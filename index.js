@@ -1,7 +1,8 @@
 const express= require('express')
 const cors= require('cors')
+
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app= express()
 const port= process.env.PORT || 5000;
 //middleware
@@ -18,15 +19,24 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
     try {
         const serviceCollection = client.db("carService").collection("services");
+      
+        app.get('/services', async(req, res)=>{
+            const query={};
+            const cursor = serviceCollection.find(query);
+            const services = await cursor.toArray();
+            res.send(services);
+        })
+        app.get('/services/:id', async(req, res)=>{
+            const id= req.params.id;
+            const query= {_id: new ObjectId(id)}
+            const ab = await serviceCollection.findOne(query);
+            res.send(ab)
+
+        })
         
-        // create a document to insert
-        const doc = {
-            
-        }
-        const result = await serviceCollection.insertOne(doc);
         
     } finally {
-        // await client.close();
+     
     }
 }
 run().catch(err=> console.log(err))
